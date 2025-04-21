@@ -1,0 +1,15 @@
+# Android/IntelliJ stuff
+.gradle/
+.idea/
+*.iml
+
+# Build files
+/build/
+app/build/
+
+# Local config
+local.properties
+
+# OS-specific crap
+.DS_Store
+Thumbs.db
