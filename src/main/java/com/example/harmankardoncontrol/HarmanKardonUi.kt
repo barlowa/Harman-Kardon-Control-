@@ -1,11 +1,13 @@
 package com.example.harmankardoncontrol
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -21,19 +23,28 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 @Composable
-fun HarmanKardonUI(api: TuyaApiService?, scenes: List<Scene>) {
+fun HarmanKardonUI(api: TuyaApiService?, scenes: List<Scene>,homeId:String?) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    if (api == null) {
-        Text("Loading API…", modifier = Modifier.padding(16.dp))
-        return
+    if(api == null || scenes.isEmpty() || homeId == null) {
+
+        return Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+            if (api == null) {
+                Text("Loading API…", modifier = Modifier.padding(16.dp))
+            }
+
+            if (scenes.isEmpty()) {
+                Text("Fetching scenes…", modifier = Modifier.padding(16.dp))
+            }
+
+            if (homeId == null) {
+                Text("Fetching credentials...", modifier = Modifier.padding(16.dp))
+            }
+        }
     }
 
-    if (scenes.isEmpty()) {
-        Text("Fetching scenes…", modifier = Modifier.padding(16.dp))
-        return
-    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -56,7 +67,7 @@ fun HarmanKardonUI(api: TuyaApiService?, scenes: List<Scene>) {
                         scope.launch {
                             snackbarHostState.showSnackbar(it)
                         }
-                    })
+                    }, homeId)
                     Spacer(Modifier.height(12.dp))
                 }
             }

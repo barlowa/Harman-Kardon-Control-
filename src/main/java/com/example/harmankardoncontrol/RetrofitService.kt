@@ -10,11 +10,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-//Need to add this info from tuya once you have set up the project
-public val clientId = ""
-public val secret = ""
-public val uid = ""
-
 interface TuyaApiService {
     @GET("v1.0/token")
     fun getToken(@Query("grant_type") grantType: Int = 1): Call<DefaultResponse<TokenResult>>
@@ -76,11 +71,11 @@ data class Executor(
 
 fun createRetrofitWithToken(token: String): TuyaApiService {
     val client = OkHttpClient.Builder()
-        .addInterceptor(SigningInterceptor(clientId, secret, token))
+        .addInterceptor(SigningInterceptor(TuyaConstants.CLIENT_ID, TuyaConstants.SECRET, token))
         .build()
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("https://openapi.tuyaeu.com/")
+        .baseUrl(TuyaConstants.BASE_URL)
         .client(client)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
@@ -91,11 +86,11 @@ fun createRetrofitWithToken(token: String): TuyaApiService {
 
 fun fetchAccessToken(): String {
     val tempClient = OkHttpClient.Builder()
-        .addInterceptor(SigningInterceptor(clientId, secret, null)) // null token on first fetch
+        .addInterceptor(SigningInterceptor(TuyaConstants.CLIENT_ID, TuyaConstants.SECRET, null)) // null token on first fetch
         .build()
 
     val tempRetrofit = Retrofit.Builder()
-        .baseUrl("https://openapi.tuyaeu.com/")
+        .baseUrl(TuyaConstants.BASE_URL)
         .client(tempClient)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())

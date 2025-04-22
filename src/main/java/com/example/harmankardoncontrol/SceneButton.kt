@@ -13,7 +13,8 @@ fun SceneButton(
     text: String,
     sceneId: String,
     service: TuyaApiService,
-    onResult: (String) -> Unit
+    onResult: (String) -> Unit,
+    homeId:String
 ) {
     val scope = rememberCoroutineScope()
 
@@ -21,7 +22,6 @@ fun SceneButton(
         scope.launch(Dispatchers.IO) {
             try {
                 // Just grab homeId once since you only use the first home anyway
-                val homeId = "47772040" // or pass it in if needed
                 val response = service.triggerScene(homeId, sceneId).execute()
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {

@@ -8,14 +8,17 @@ import android.util.Log
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("BOOT", "Boot completed detected. Starting service.")
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            val serviceIntent = Intent(context, StartupService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent)
-            } else {
-                context.startService(serviceIntent)
-            }
+        Log.d("BOOT", "Boot completed. Starting services.")
+
+        val startup = Intent(context, StartupService::class.java)
+        val shutdownSniffer = Intent(context, ShutdownPollingService::class.java)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(startup)
+            context.startForegroundService(shutdownSniffer)
+        } else {
+            context.startService(startup)
+            context.startService(shutdownSniffer)
         }
     }
 }
